@@ -15,7 +15,7 @@ public class UrlRequest {
             regexp = "^(http|https)://.*$",
             message = "URL must start with http:// or https://"
     )
-    private String longUtl;
+    private String longUrl;
     private String expirationTime;
 
 }
