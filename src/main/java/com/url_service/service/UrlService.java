@@ -4,6 +4,7 @@ import com.url_service.dto.UrlRequest;
 import com.url_service.model.Url;
 import com.url_service.repository.UrlRepository;
 import com.url_service.util.Base62Encoder;
+import com.url_service.util.SnowflakeIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,17 +14,21 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class UrlService {
 
-    private UrlRepository urlRepository;
-    private Base62Encoder encoder;
+    private final SnowflakeIdGenerator snowflakeIdGenerator;
+    private final UrlRepository urlRepository;
+    private final Base62Encoder encoder;
 
     @Autowired
-    public UrlService(UrlRepository urlRepository, Base62Encoder encoder) {
+    public UrlService(UrlRepository urlRepository, Base62Encoder encoder, SnowflakeIdGenerator snowflakeIdGenerator) {
         this.urlRepository = urlRepository;
         this.encoder = encoder;
+        this.snowflakeIdGenerator = snowflakeIdGenerator;
     }
 
     public String shortenUrl(UrlRequest request) {
 
+        long uniqeId = snowflakeIdGenerator.nextId();
+        String shortCode = encoder.encode(uniqeId);
         Url url = new Url();
 
         url.setLongUrl(request.getLongUrl());
@@ -35,8 +40,6 @@ public class UrlService {
         }
 
         url = urlRepository.save(url);
-
-        String shortCode = encoder.encode(url.getId());
 
         url.setShortCode(shortCode);
 

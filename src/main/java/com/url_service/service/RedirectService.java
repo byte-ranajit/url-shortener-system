@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class RedirectService {
     private RedisTemplate<String, String> redisTemplate;
@@ -23,7 +25,12 @@ public class RedirectService {
        if (cached != null)
             return cached;
 
-       Url url = urlRepository.findByShortCode(shortCode).orElseThrow();
+       Url url = urlRepository.findByShortCode(shortCode)
+               .orElseThrow(() -> new RuntimeException("Short URL not found"));
+        if (url.getExpirationTime() != null &&
+                url.getExpirationTime().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Link expired");
+        }
        redisTemplate.opsForValue().set(shortCode, url.getLongUrl());
        return url.getLongUrl();
     }

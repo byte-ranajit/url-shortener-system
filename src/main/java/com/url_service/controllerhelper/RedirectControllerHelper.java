@@ -4,6 +4,7 @@ import com.url_service.model.Url;
 import com.url_service.model.UrlClick;
 import com.url_service.repository.UrlClickRepository;
 import com.url_service.repository.UrlRepository;
+import com.url_service.service.RedirectService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,14 +18,17 @@ public class RedirectControllerHelper {
 
     UrlRepository urlRepository;
     UrlClickRepository urlClickRepository;
+    RedirectService redirectService;
 
     @Autowired
-    RedirectControllerHelper(UrlRepository urlRepository, UrlClickRepository urlClickRepository){
+    RedirectControllerHelper(UrlRepository urlRepository, UrlClickRepository urlClickRepository, RedirectService redirectService){
         this.urlClickRepository = urlClickRepository;
         this.urlRepository = urlRepository;
+        this.redirectService = redirectService;
     }
 
     public HttpHeaders redirectUrl(String code){
+        String longUrl = redirectService.getLongUrl(code);
         Url url = urlRepository.findByShortCode(code)
                 .orElseThrow(() -> new RuntimeException("Short URL not found"));
         if (url.getExpirationTime() != null && url.getExpirationTime().isBefore(LocalDateTime.now())) {
@@ -37,7 +41,7 @@ public class RedirectControllerHelper {
         urlRepository.save(url);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(
-                URI.create(url.getLongUrl())
+                URI.create(longUrl)
         );
 
         return headers;
