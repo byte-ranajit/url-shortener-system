@@ -6,6 +6,7 @@ import com.url_service.repository.UrlClickRepository;
 import com.url_service.repository.UrlRepository;
 import com.url_service.service.RedirectService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -14,18 +15,12 @@ import java.net.URI;
 import java.time.LocalDateTime;
 
 @Component
+@AllArgsConstructor
 public class RedirectControllerHelper {
 
     UrlRepository urlRepository;
     UrlClickRepository urlClickRepository;
     RedirectService redirectService;
-
-    @Autowired
-    RedirectControllerHelper(UrlRepository urlRepository, UrlClickRepository urlClickRepository, RedirectService redirectService){
-        this.urlClickRepository = urlClickRepository;
-        this.urlRepository = urlRepository;
-        this.redirectService = redirectService;
-    }
 
     public HttpHeaders redirectUrl(String code){
         String longUrl = redirectService.getLongUrl(code);

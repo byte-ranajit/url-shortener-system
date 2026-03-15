@@ -4,18 +4,17 @@ import com.url_service.dto.UrlRequest;
 import com.url_service.dto.UrlResponse;
 import com.url_service.model.Url;
 import com.url_service.service.UrlService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/url")
+@AllArgsConstructor
 public class UrlController {
+
     private UrlService urlService;
-    @Autowired
-    public void setUrlService(UrlService urlService) {
-        this.urlService = urlService;
-    }
 
     @PostMapping("/shorten")
     public UrlResponse shorten(@RequestBody UrlRequest request){
