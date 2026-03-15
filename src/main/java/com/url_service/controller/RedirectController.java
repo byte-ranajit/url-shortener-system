@@ -4,6 +4,7 @@ import com.url_service.controllerhelper.RedirectControllerHelper;
 import com.url_service.model.Url;
 import com.url_service.repository.UrlRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,16 +17,11 @@ import java.net.URI;
 import java.time.LocalDateTime;
 
 @RestController
+@AllArgsConstructor
 public class RedirectController {
 
     private UrlRepository urlRepository;
     private RedirectControllerHelper redirectControllerHelper ;
-
-    @Autowired
-    public RedirectController(UrlRepository urlRepository, RedirectControllerHelper redirectControllerHelper){
-        this.urlRepository = urlRepository;
-        this.redirectControllerHelper = redirectControllerHelper;
-    }
 
     @GetMapping("/{code}")
     public ResponseEntity<Void> redirect (@PathVariable String code, HttpServletRequest request) {
